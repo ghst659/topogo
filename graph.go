@@ -131,9 +131,7 @@ func (g *DirectedGraph) Subgraph(i []string, t []string) (sg []string) {
 
 func (g *DirectedGraph) neighbours(n string, d int) (result []string) {
 	if g.HasNode(n) {
-		for id, _ := range g.nodes[n][d] {
-			result = append(result, id)
-		}
+		result = s2l(g.nodes[n][d])
 	}
 	return
 }
@@ -160,9 +158,7 @@ func (g *DirectedGraph) traceNodes(starts []string, dir int) (result []string) {
 				break queueLoop
 			}
 		}
-		for n := range visited {
-			result = append(result, n)
-		}
+		result = s2l(visited)
 	}
 	return
 }
@@ -180,6 +176,13 @@ func l2s(l []string) (m nodeSet) {
 	m = make(nodeSet)
 	for _, v := range l {
 		m[v] = true
+	}
+	return
+}
+
+func s2l(s nodeSet) (l []string) {
+	for v, _ := range s {
+		l = append(l, v)
 	}
 	return
 }
