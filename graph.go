@@ -138,28 +138,31 @@ func (g *DirectedGraph) neighbours(n string, d int) (result []string) {
 	return
 }
 
-func (g *DirectedGraph) traceNodes(nodes []string, d int) (result []string) {
-	tally := make(nodeSet)
-	queue := make(chan string, 256)
-	defer close(queue)
-	for _, n := range nodes {
-		queue <- n
-	}
-	queueLoop: for {
-		select {
-		case current := <-queue:
-			if ! tally[current] {
-				tally[current] = true
-				for _, child := range g.neighbours(current, d) {
-					queue <- child
-				}
-			}
-		default:
-			break queueLoop
+func (g *DirectedGraph) traceNodes(starts []string, dir int) (result []string) {
+	size := len(g.nodes)
+	if size > 0 {
+		visited := make(nodeSet)
+		queue := make(chan string, size)
+		defer close(queue)
+		for _, k := range starts {
+			queue <- k
 		}
-	}
-	for n := range tally {
-		result = append(result, n)
+		queueLoop: for {
+			select {
+			case current := <-queue:
+				if ! visited[current] {
+					visited[current] = true
+					for _, child := range g.neighbours(current, dir) {
+						queue <- child
+					}
+				}
+			default:
+				break queueLoop
+			}
+		}
+		for n := range visited {
+			result = append(result, n)
+		}
 	}
 	return
 }
