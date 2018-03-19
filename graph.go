@@ -1,5 +1,7 @@
 package topogo
-
+// A package implementing a graph abstraction,
+// for the purposes of finding spanning paths
+// among nodes.
 import (
 	"log"
 	"os"
